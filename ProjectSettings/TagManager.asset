@@ -7,6 +7,7 @@ TagManager:
   - Door
   - Chort
   - Dot
+  - LineColliders
   - Spaceship_Player
   layers:
   - Default
@@ -25,7 +26,7 @@ TagManager:
   - Obstacle
   - Stairs
   - Collectables
-  - 
+  - LineColliders
   - 
   - 
   - 
