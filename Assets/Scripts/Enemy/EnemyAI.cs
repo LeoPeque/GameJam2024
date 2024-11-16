@@ -17,26 +17,63 @@ public class EnemyAI : MonoBehaviour
 
     public Enemy enemy;
 
+    // Add these variables
+    public float timeSinceLastAttack = 0f;
+    public float attackCooldown = 5f; // Time in seconds before switching targets
+    private Transform currentTarget;
 
     void Start()
     {
-        targetBoxCollider = GameObject.Find("Player").GetComponent<BoxCollider2D>();
+        currentTarget = GameObject.Find("Player").transform;
+        targetBoxCollider = currentTarget.GetComponent<BoxCollider2D>();
         InvokeRepeating("UpdatePath", 0, 1f);
     }
-
-
 
     void UpdatePath()
     {
         if (seeker.IsDone())
         {
-            // Calculate path & Call OnPathComplete when finished calculating path
+            // Update target based on timer
+            if (timeSinceLastAttack >= attackCooldown)
+            {
+                // Find the nearest LineCollider
+                GameObject[] lineColliders = GameObject.FindGameObjectsWithTag("LineColliders");
+                if (lineColliders.Length > 0)
+                {
+                    currentTarget = FindNearestLineCollider(lineColliders);
+                    targetBoxCollider = currentTarget.GetComponent<BoxCollider2D>();
+                }
+            }
+            else
+            {
+                // Target the Player
+                currentTarget = GameObject.Find("Player").transform;
+                targetBoxCollider = currentTarget.GetComponent<BoxCollider2D>();
+            }
+
+            // Calculate path
             seeker.StartPath(boxCollider.bounds.center, targetBoxCollider.bounds.center, OnPathComplete);
-        } 
+        }
     }
 
+    private Transform FindNearestLineCollider(GameObject[] lineColliders)
+    {
+        Transform nearest = null;
+        float minDistance = Mathf.Infinity;
+        Vector3 currentPosition = transform.position;
 
-    
+        foreach (GameObject lineCollider in lineColliders)
+        {
+            float distance = Vector3.Distance(lineCollider.transform.position, currentPosition);
+            if (distance < minDistance)
+            {
+                minDistance = distance;
+                nearest = lineCollider.transform;
+            }
+        }
+        return nearest;
+    }
+
     void OnPathComplete(Path p)
     {
         if (!p.error)
@@ -45,8 +82,6 @@ public class EnemyAI : MonoBehaviour
             currentWaypoint = 0;
         }
     }
-
-
 
     private void FixedUpdate()
     {
@@ -57,6 +92,8 @@ public class EnemyAI : MonoBehaviour
                 return;
             }
 
+            // Update time since last attack
+            timeSinceLastAttack += Time.deltaTime;
 
             Vector2 direction;
 
@@ -66,7 +103,7 @@ public class EnemyAI : MonoBehaviour
             }
             else
             {
-                direction = path.vectorPath[currentWaypoint+1] - boxCollider.bounds.center;
+                direction = path.vectorPath[currentWaypoint + 1] - boxCollider.bounds.center;
                 float distance = Vector2.Distance(boxCollider.bounds.center, path.vectorPath[currentWaypoint]);
                 if (distance < nextWayPointdistance)
                 {
@@ -78,22 +115,17 @@ public class EnemyAI : MonoBehaviour
 
             enemy.Move(force);
 
-
             // Enemy facing direction
             if (force.x > 0)
             {
                 enemy.enemyDirection = "Right";
-
                 transform.localScale = new Vector3(1, 1, 1);
             }
             else if (force.x < 0)
             {
                 enemy.enemyDirection = "Left";
-
                 transform.localScale = new Vector3(-1, 1, 1);
             }
-
-            
         }
     }
 }
