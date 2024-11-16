@@ -58,6 +58,11 @@ abstract public class Enemy: MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Attack(collision.gameObject.GetComponent<Player>());
+            enemyAI.timeSinceLastAttack = 0f; // Reset timer
+        }
+        else if (collision.gameObject.CompareTag("LineColliders"))
+        {
+            AttackLineCollider();
         }
     }
 
@@ -66,10 +71,20 @@ abstract public class Enemy: MonoBehaviour
         if (collision.gameObject.layer == LayerMask.NameToLayer("Player"))
         {
             Attack(collision.gameObject.GetComponent<Player>());
+            enemyAI.timeSinceLastAttack = 0f; // Reset timer
+        }
+        else if (collision.gameObject.CompareTag("LineColliders"))
+        {
+            AttackLineCollider();
         }
     }
 
-
+    protected void AttackLineCollider()
+    {
+        // Damage the Player when LineCollider is attacked
+        Player player = GameObject.Find("Player").GetComponent<Player>();
+        player.TakeDamage(Damage, this.gameObject);
+    }
 
     public abstract void Move(Vector2 force);
     

@@ -6,6 +6,11 @@ TagManager:
   tags:
   - Door
   - Chort
+<<<<<<< Updated upstream
+=======
+  - Dot
+  - LineColliders
+>>>>>>> Stashed changes
   layers:
   - Default
   - TransparentFX
@@ -23,8 +28,8 @@ TagManager:
   - Obstacle
   - Stairs
   - Collectables
-  - 
-  - 
+  - LineColliders
+  - Segments
   - 
   - 
   - 
