@@ -97,7 +97,7 @@ public class Player : MonoBehaviour
     // New field for the blue gradient
     [Header("Gradient Settings")]
     public Gradient blueGradient;
-    private List<EdgeCollider2D> pathColliders = new List<EdgeCollider2D>();
+    private List<BoxCollider2D> pathColliders = new List<BoxCollider2D>();
     public LayerMask collisionLayer; // Set this to "Enemy" layer in Inspector
 
     private void Start()
@@ -251,7 +251,7 @@ public class Player : MonoBehaviour
     // Add these new methods to handle the colliders:
     private void UpdatePathColliders(List<Vector2> pathPoints)
     {
-        // Clear excess colliders if we have more than we need
+        // Clear excess colliders
         while (pathColliders.Count > pathPoints.Count - 1)
         {
             if (pathColliders[pathColliders.Count - 1] != null)
@@ -261,42 +261,42 @@ public class Player : MonoBehaviour
             pathColliders.RemoveAt(pathColliders.Count - 1);
         }
 
-        // Create or update colliders for each segment
+        // Create or update colliders
         for (int i = 0; i < pathPoints.Count - 1; i++)
         {
-            EdgeCollider2D collider;
+            GameObject colliderObj;
+            BoxCollider2D boxCollider;
             
             if (i >= pathColliders.Count)
             {
-                // Create new GameObject for the collider
-                GameObject colliderObj = new GameObject($"PathCollider_{i}");
-                colliderObj.transform.position = Vector3.zero;
-                collider = colliderObj.AddComponent<EdgeCollider2D>();
-                
-                // Put the collider in a specific layer (create this layer in Unity)
+                colliderObj = new GameObject($"PathCollider_{i}");
+                boxCollider = colliderObj.AddComponent<BoxCollider2D>();
                 colliderObj.layer = LayerMask.NameToLayer("LineColliders");
-                
-                // Set the tag
                 colliderObj.tag = "LineColliders";
-                
-                // Configure the collision detection to only affect enemies
-                Physics2D.IgnoreCollision(collider, GetComponent<Collider2D>(), true); // Ignore player collision
-                
-                pathColliders.Add(collider);
+                Physics2D.IgnoreCollision(boxCollider, GetComponent<Collider2D>(), true);
+                pathColliders.Add(boxCollider);
             }
             else
             {
-                collider = pathColliders[i];
+                boxCollider = pathColliders[i];
+                colliderObj = boxCollider.gameObject;
             }
 
-            // Update collider points using world space coordinates
-            Vector2[] points = new Vector2[2];
-            points[0] = pathPoints[i];
-            points[1] = pathPoints[i + 1];
-            collider.points = points;
+            Vector2 pointA = pathPoints[i];
+            Vector2 pointB = pathPoints[i + 1];
+            Vector2 midPoint = (pointA + pointB) / 2;
+            Vector2 direction = pointB - pointA;
+            float length = direction.magnitude;
+            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+            
+            colliderObj.transform.position = midPoint;
+            colliderObj.transform.rotation = Quaternion.Euler(0, 0, angle);
+            boxCollider.size = new Vector2(length, lineWidth);
+            boxCollider.offset = Vector2.zero;
         }
     }
 
+    
     private void ClearPathColliders()
     {
         foreach (var collider in pathColliders)
