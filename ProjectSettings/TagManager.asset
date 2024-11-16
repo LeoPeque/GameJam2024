@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Door
   - Chort
+  - Spaceship_Player
   layers:
   - Default
   - TransparentFX
