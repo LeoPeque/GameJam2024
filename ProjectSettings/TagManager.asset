@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Door
   - Chort
+  - Dot
   layers:
   - Default
   - TransparentFX
