@@ -8,6 +8,7 @@ TagManager:
   - Chort
   - Dot
   - LineColliders
+  - Spaceship_Player
   layers:
   - Default
   - TransparentFX
