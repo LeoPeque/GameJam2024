@@ -13,7 +13,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Inventory
   - 
   - Player
   - Enemy
@@ -57,4 +57,7 @@ TagManager:
     locked: 0
   - name: UI
     uniqueID: 392434595
+    locked: 0
+  - name: Inventory
+    uniqueID: 689071913
     locked: 0
