@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    public Transform playerTransform; // Reference to the player's Transform
+    public Vector3 offset = new Vector3(0, 0, -10); // Offset to keep the camera at the correct depth
 
-    private void Update()
+    private void LateUpdate()
     {
-        RoomController roomController = RoomController.instance;
-        Vector3 newCameraPosition = new Vector3(roomController.currentRoomCoordinates.x * roomController.width * 2 + 0.5f, roomController.currentRoomCoordinates.y * roomController.height * 2 + 1, -10);
-        transform.position = Vector3.MoveTowards(transform.position, newCameraPosition, Time.deltaTime * 100);
+        if (playerTransform != null)
+        {
+            // Update the camera's position to follow the player
+            transform.position = playerTransform.position + offset;
+        }
     }
-
-
 }
