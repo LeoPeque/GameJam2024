@@ -78,8 +78,8 @@ public class Invaders : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        int positionX_Invader = Random.Range(0, 7);// 7 es placeholder para energía del invasor.
-        int positionY_Invader = 7 - positionX_Invader;
+        int positionX_Invader = Random.Range(0, 6);// 7 es placeholder para energía del invasor.
+        int positionY_Invader = 6 - positionX_Invader;
         Vector2 initial_Position = new Vector2(positionX_Invader, positionY_Invader);// Poner invasor a distancia de la energía total inicial del jugador.
         invasor = Instantiate(invasor, initial_Position, Quaternion.identity);
         //Instanciar con sprite ahí
@@ -87,18 +87,19 @@ public class Invaders : MonoBehaviour
 
     void CheckEnergy(SpaceShip PlayerSpaceship)
     {
+        
         if (currentEnergy != PlayerSpaceship.energy)
         {
-            Debug.Log("Inside");
-            Debug.Log(currentEnergy);
-            Debug.Log(PlayerSpaceship.energy);
+            //Debug.Log("Inside");
+            //Debug.Log(currentEnergy);
+            //Debug.Log(PlayerSpaceship.energy);
 
             BestMove(PlayerSpaceship.gameObject, gameObject);
             currentEnergy = PlayerSpaceship.energy;
         }
-        Debug.Log("Outside");
-        Debug.Log(currentEnergy);
-        Debug.Log(PlayerSpaceship.energy);
+        //Debug.Log("Outside");
+        //Debug.Log(currentEnergy);
+        //Debug.Log(PlayerSpaceship.energy);
     }
 
     // Update is called once per frame
